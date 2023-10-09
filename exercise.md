@@ -60,3 +60,37 @@ SELECT `exam_id`, AVG(`vote`) FROM `exam_student` GROUP BY `exam_id`;
 4. Contare quanti corsi di laurea ci sono per ogni dipartimento
 
 SELECT `department_id`, COUNT(`name`) FROM `degrees` GROUP BY `department_id`;
+
+JOIN
+
+1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+
+SELECT `students`.*, `degrees`.`name` "corso di laurea" FROM `students` INNER JOIN `degrees` ON `degrees`.`name`="Corso di Laurea in Economia";
+
+2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di
+Neuroscienze
+
+SELECT `departments`.`name` "nome_dipartimento", `degrees`.`name` "nome_corso_di_laurea" FROM `departments` INNER JOIN `degrees` ON `level`="magistrale" WHERE `departments`.`name`="Dipartimento di Neuroscienze";
+
+3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)
+
+SELECT `teachers`.`name`, `teachers`.`surname`, `courses`.`name` FROM `course_teacher` INNER JOIN `teachers` ON `teachers`.`id`=`course_teacher`.`teacher_id` INNER JOIN `courses` ON `courses`.`id`=`course_teacher`.`course_id` WHERE `teachers`.`id`= 44;
+
+4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui
+sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e
+nome
+
+SELECT `students`.*, `degrees`.`name` "nome_corso_di_laurea", `departments`.`name` "nome_dipartimento" FROM `students` INNER JOIN `degrees` ON `students`.`degree_id`=`degrees`.`id` INNER JOIN `departments` ON `degrees`.`department_id`=`departments`.`id` ORDER BY `students`.`surname` ASC, `students`.`name` ASC;
+
+5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
+
+SELECT `teachers`.`name`, `teachers`.`surname`, `degrees`.`name` "nome_corso_di_laurea", `courses`.`name` "nome_corso" FROM `course_teacher` INNER JOIN `courses` ON `course_teacher`.`course_id`=`courses`.`id` INNER JOIN `teachers` ON `course_teacher`.`teacher_id`=`teachers`.`id` INNER JOIN `degrees` ON `courses`.`degree_id`=`degrees`.`id`;
+
+6. Selezionare tutti i docenti che insegnano nel Dipartimento di
+Matematica (54)
+
+SELECT DISTINCT `teachers`.`name`, `teachers`.`surname`, `departments`.`name` "nome_dipartimento" FROM `course_teacher` INNER JOIN `courses` ON `course_teacher`.`course_id`=`courses`.`id` INNER JOIN `teachers` ON `course_teacher`.`teacher_id`=`teachers`.`id` INNER JOIN `degrees` ON `courses`.`degree_id`=`degrees`.`id` INNER JOIN `departments` ON `degrees`.`department_id`=`departments`.`id` WHERE `departments`.`name`="Dipartimento di Matematica";
+
+7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti
+per ogni esame, stampando anche il voto massimo. Successivamente,
+filtrare i tentativi con voto minimo 18.
